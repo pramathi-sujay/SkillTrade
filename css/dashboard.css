@@ -1,0 +1,319 @@
+@charset "UTF-8";
+
+/* Font and Base */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8fbff;
+    color: #333;
+    margin: 0;
+  }
+  
+  /* Header / Navbar */
+  header {
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  header img.logo {
+    height: 48px;
+  }
+  
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+  }
+  
+  nav a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: 0.3s;
+    padding: 6px 12px;
+    border-radius: 12px;
+  }
+  
+  nav a:hover {
+    background-color: #e0f0ff;
+    color: #1e88e5;
+  }
+  
+  /* Dashboard Container */
+  .dashboard-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 2rem;
+  }
+  
+  .dashboard-title {
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+  
+  /* Tabs / Filters */
+  .filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .tab-btn {
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    background: #e0e0e0;
+    color: #333;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .tab-btn.active {
+    background: #4da6ff;
+    color: #fff;
+  }
+  
+  /* Task Table */
+  .task-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+  
+  .task-table th,
+  .task-table td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .task-table th {
+    background: #e0f0ff;
+    color: #1e88e5;
+    font-weight: 600;
+  }
+  
+  /* Status Tags */
+  .status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  
+  .status.in-progress {
+    background: #e0f7ff;
+    color: #1e88e5;
+  }
+  
+  .status.completed {
+    background: #d4fce0;
+    color: #166534;
+  }
+  
+  /* Action Buttons */
+  .icon-btn {
+    background: transparent;
+    border: none;
+    margin-right: 6px;
+    cursor: pointer;
+    color: #777;
+    transition: color 0.2s;
+  }
+  
+  .icon-btn:hover {
+    color: #333;
+  }
+  
+  .complete-btn {
+    background-color: #38bdf8;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-weight: 500;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .complete-btn:hover {
+    background-color: #0ea5e9;
+  }
+  
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 20px 0;
+    background: #ffffff;
+    border-top: 1px solid #e0e0e0;
+    color: #777;
+  }
+  nav a {
+    text-decoration: none;
+    color: #333; /* Default text color */
+    font-weight: 500;
+    transition: color 0.3s ease;
+    padding: 6px 0; /* no background or rounded corners */
+  }
+  
+  nav a:hover {
+    color: #1e88e5; /* Just the text changes to blue */
+    background: none; /* No background color */
+  }
+  header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .logo img {
+    height: 50px;
+  }
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #f9f9fb;
+    color: #333;
+    line-height: 1.6;
+  }
+  
+  /* Container Utility */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+  }
+  
+  /* Header/Navbar */
+  header {
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  header img {
+    height: 50px;
+    margin-right: 1rem;
+  }
+  
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 3rem;
+  }
+  
+  nav a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+  
+  nav a:hover {
+    color: #4da6ff; /* Light Blue */
+  }
+  .tick-btn {
+    visibility: hidden;
+  }
+  .status.completed {
+    background: #bbf7d0;
+    color: #166534;
+  }
+  .tab-buttons {
+    display: flex;
+    background: #4da6ff;
+    border-radius: 999px;
+    margin-bottom: 20px;
+    padding: 5px;
+  }
+  
+  .tab-btn {
+    background: transparent;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-weight: 500;
+    cursor: pointer;
+    color: #333;
+  }
+  
+  .tab-btn.active {
+    background: #4da6ff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .task-table {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 10px 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  
+  .task-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .task-table th, .task-table td {
+    padding: 12px 10px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+    color: #333;
+  }
+  
+  .task-table th {
+    font-weight: 600;
+    color: #777;
+    background-color: #eaf4ff;
+  }
+  
+  .status {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 999px;
+    display: inline-block;
+  }
+  
+  .status.open {
+    background-color: #f3f4f6;
+    color: #4b5563;
+  }

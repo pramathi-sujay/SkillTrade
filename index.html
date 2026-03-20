@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkillTrade</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+  <style>
+    .task-tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .tab-btn {
+      padding: 0.5rem 1rem;
+      border: 2px solid #4da6ff;
+      border-radius: 8px;
+      background: white;
+      color: #4da6ff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .tab-btn.active {
+      background: #4da6ff;
+      color: white;
+    }
+
+    .tab-btn:hover {
+      background: #4da6ff;
+      color: white;
+    }
+
+    .task-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 1rem;
+      background: white;
+      transition: transform 0.2s ease;
+    }
+
+    .task-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .task-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+    }
+
+    .token-badge {
+      background: #e3f2fd;
+      color: #1976d2;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    .barter-badge {
+      background: #f3e5f5;
+      color: #7b1fa2;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 0.5rem 0;
+    }
+
+    .tags span {
+      background: #f5f5f5;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+
+    .task-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .task-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .view-details, .chat-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .view-details {
+      background: #4da6ff;
+      color: white;
+    }
+
+    .chat-btn {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    .view-details:hover {
+      background: #3d8cd6;
+    }
+
+    .chat-btn:hover {
+      background: #e0e0e0;
+    }
+
+    .chat-btn i {
+      margin-right: 0.3rem;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      justify-content: flex-end;
+    }
+
+    .btn-cancel, .btn-apply, .btn-chat {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-cancel {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    .btn-apply {
+      background: #4da6ff;
+      color: white;
+    }
+
+    .btn-chat {
+      background: #f8f9fa;
+      color: #333;
+      border: 1px solid #dee2e6;
+    }
+
+    .btn-cancel:hover {
+      background: #e0e0e0;
+    }
+
+    .btn-apply:hover {
+      background: #3d8cd6;
+    }
+
+    .btn-chat:hover {
+      background: #e9ecef;
+    }
+
+    .btn-chat i {
+      margin-right: 0.3rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <img src="logo.png" alt="SkillTrade Logo" class="logo">
+      <nav>
+        <ul>
+          <li><a href="index2.html" style="color:#4da6ff;"><i class="fa-solid fa-house"></i> Home</a></li>
+          <li><a href="profile.html"><i class="fa-solid fa-user"></i> My Profile</a></li>
+          <li><a href="post.html"><i class="fa-solid fa-plus"></i> Post Task</a></li>
+          <li><a href="wallet.html"><i class="fa-solid fa-wallet"></i> Wallet</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h1>Trade Skills. Grow Together.</h1>
+      <p>Connect with others to exchange knowledge and services.</p>
+    </div>
+  </section>
+
+  <section class="recent-tasks">
+    <div class="container">
+      <div class="tasks-header">
+        <h2>Recent Tasks</h2>
+        <p>Browse tasks that match your skills</p>
+        <div class="task-tabs">
+          <button class="tab-btn active" data-tab="token">
+            <i class="fa-solid fa-coins"></i> Token Tasks
+          </button>
+          <button class="tab-btn" data-tab="barter">
+            <i class="fa-solid fa-handshake"></i> Barter Tasks
+          </button>
+        </div>
+        <div class="filter-options">
+          <select id="task-sort">
+            <option value="newest">Newest First</option>
+            <option value="deadline">Deadline (Soon First)</option>
+            <option value="tokens-high">Tokens (High to Low)</option>
+            <option value="tokens-low">Tokens (Low to High)</option>
+          </select>
+        </div>
+        <a href="post.html" class="post-task-btn">
+          <i class="fa-solid fa-plus"></i> Post Task
+        </a>
+      </div>
+
+      <div id="token-tasks" class="task-grid">
+        <!-- Token task cards will be loaded here dynamically -->
+        <div id="loading-token-tasks">
+          <p><i class="fa-solid fa-spinner fa-spin"></i> Loading token tasks...</p>
+        </div>
+      </div>
+
+      <div id="barter-tasks" class="task-grid" style="display: none;">
+        <!-- Barter task cards will be loaded here dynamically -->
+        <div id="loading-barter-tasks">
+          <p><i class="fa-solid fa-spinner fa-spin"></i> Loading barter tasks...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Task Detail Modal -->
+  <div id="task-modal" class="task-modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <div class="modal-header">
+        <h2 id="modal-task-title">Task Title</h2>
+      </div>
+      <div class="modal-task-meta">
+        <span id="modal-task-date"><i class="fa-solid fa-calendar-days"></i> Due Date</span>
+        <span id="modal-task-poster">Posted by User</span>
+      </div>
+      <div id="modal-task-payment" class="modal-task-payment">
+        Payment Info
+      </div>
+      <div id="modal-task-description">
+        <h3>Description</h3>
+        <p>Task description will appear here.</p>
+      </div>
+      <div class="modal-task-skills">
+        <h3>Skills Required</h3>
+        <div id="modal-task-skills" class="tags">
+          <!-- Skill tags will be inserted here -->
+        </div>
+      </div>
+      <div class="modal-buttons">
+        <button class="btn-cancel" id="modal-close-btn">Close</button>
+        <button class="btn-apply" id="modal-apply-btn">Apply for Task</button>
+        <button class="btn-chat" id="modal-chat-btn"><i class="fa-solid fa-comments"></i> Chat with Poster</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 SkillTrade. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    // Initialize Firebase with your config
+    const firebaseConfig = {
+      apiKey: "AIzaSyC4rWcnOVhEe25tLftQFI32oMUl4fSp7zk",
+      authDomain: "skilltrade-67ea2.firebaseapp.com",
+      projectId: "skilltrade-67ea2",
+      storageBucket: "skilltrade-67ea2.appspot.com",
+      messagingSenderId: "381930307884",
+      appId: "1:381930307884:web:99f0db9878cb472edd2c89",
+      measurementId: "G-PV0G2TPBRE"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tokenTasksGrid = document.getElementById('token-tasks');
+      const barterTasksGrid = document.getElementById('barter-tasks');
+      const sortSelect = document.getElementById('task-sort');
+      let allTasks = [];
+
+      // Tab switching functionality
+      document.querySelectorAll('.tab-btn').forEach(button => {
+        button.addEventListener('click', () => {
+          // Remove active class from all buttons
+          document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+          });
+          
+          // Add active class to clicked button
+          button.classList.add('active');
+          
+          // Show corresponding task grid
+          const tabName = button.getAttribute('data-tab');
+          tokenTasksGrid.style.display = tabName === 'token' ? 'grid' : 'none';
+          barterTasksGrid.style.display = tabName === 'barter' ? 'grid' : 'none';
+        });
+      });
+
+      // Function to fetch tasks from Firebase
+      async function fetchTasks() {
+        try {
+          const taskSnapshot = await db.collection('tasks')
+            .orderBy('createdAt', 'desc')
+            .get();
+          
+          if (taskSnapshot.empty) {
+            tokenTasksGrid.innerHTML = '<p class="no-tasks">No token tasks found. Be the first to post one!</p>';
+            barterTasksGrid.innerHTML = '<p class="no-tasks">No barter tasks found. Be the first to post one!</p>';
+            return;
+          }
+
+          allTasks = [];
+          // Create a map to store user names
+          const userNames = new Map();
+
+          // First, collect all unique user IDs
+          const userIds = new Set();
+          taskSnapshot.forEach(doc => {
+            const taskData = doc.data();
+            if (taskData.uid) {
+              userIds.add(taskData.uid);
+            }
+          });
+
+          // Fetch all user names in one batch
+          const userPromises = Array.from(userIds).map(async (uid) => {
+            const userDoc = await db.collection('users').doc(uid).get();
+            if (userDoc.exists) {
+              userNames.set(uid, userDoc.data().name || 'Unknown User');
+            }
+          });
+
+          // Wait for all user data to be fetched
+          await Promise.all(userPromises);
+
+          // Now process tasks with user names
+          taskSnapshot.forEach(doc => {
+            const taskData = doc.data();
+            taskData.id = doc.id;
+            taskData.userName = userNames.get(taskData.uid) || 'Unknown User';
+            allTasks.push(taskData);
+          });
+
+          renderTasks(allTasks);
+        } catch (error) {
+          console.error('Error fetching tasks:', error);
+          tokenTasksGrid.innerHTML = '<p class="error-message">Error loading tasks. Please try again.</p>';
+          barterTasksGrid.innerHTML = '<p class="error-message">Error loading tasks. Please try again.</p>';
+        }
+      }
+
+      // Function to format date for display
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        return date.toLocaleDateString('en-US', options);
+      }
+
+      // Function to render task cards
+      function renderTasks(tasks) {
+        tokenTasksGrid.innerHTML = '';
+        barterTasksGrid.innerHTML = '';
+
+        tasks.forEach(task => {
+          const taskCard = document.createElement('div');
+          taskCard.className = 'task-card';
+          taskCard.dataset.taskId = task.id;
+          
+          // Check if this is the current user's task
+          const currentUser = firebase.auth().currentUser;
+          if (currentUser && task.uid === currentUser.uid) {
+            taskCard.className = 'task-card own-task';
+          }
+
+          // Format the skills as tags
+          const skillsArray = task.skills.split(',');
+          let skillTags = '';
+          skillsArray.forEach(skill => {
+            skillTags += `<span>${skill.trim()}</span>`;
+          });
+
+          // Format deadline
+          const deadlineDate = formatDate(task.deadline);
+
+          if (task.barter) {
+            // Barter task card
+            taskCard.innerHTML = `
+              <div class="task-header">
+                <h3>${task.title}</h3>
+                <span class="barter-badge"><i class="fa-solid fa-handshake"></i> Barter</span>
+              </div>
+              <p>${task.description.substring(0, 120)}${task.description.length > 120 ? '...' : ''}</p>
+              <div class="tags">
+                ${skillTags}
+              </div>
+              <div class="task-meta">
+                <span><i class="fa-solid fa-calendar-days"></i> Due ${deadlineDate}</span>
+                <span>Posted by ${task.userName}</span>
+              </div>
+              <div class="barter-details">
+                <p><strong>Exchange:</strong> ${task.barterReturn}</p>
+              </div>
+              <button class="view-details" data-id="${task.id}">View Details</button>
+            `;
+            barterTasksGrid.appendChild(taskCard);
+          } else {
+            // Token task card
+            const taskType = `<span class="token"><i class="fa-solid fa-sack-dollar"></i> ${task.tokens} Tokens</span>`;
+            taskCard.innerHTML = `
+              <div class="task-header">
+                <h3>${task.title}</h3>
+                ${taskType}
+              </div>
+              <p>${task.description.substring(0, 120)}${task.description.length > 120 ? '...' : ''}</p>
+              <div class="tags">
+                ${skillTags}
+              </div>
+              <div class="task-meta">
+                <span><i class="fa-solid fa-calendar-days"></i> Due ${deadlineDate}</span>
+                <span>Posted by ${task.userName}</span>
+              </div>
+              <button class="view-details" data-id="${task.id}">View Details</button>
+            `;
+            tokenTasksGrid.appendChild(taskCard);
+          }
+        });
+
+        // Add event listeners to view details buttons and request buttons
+        document.querySelectorAll('.view-details').forEach(button => {
+          button.addEventListener('click', () => {
+            const taskId = button.getAttribute('data-id');
+            viewTaskDetails(taskId);
+          });
+        });
+
+        document.querySelectorAll('.request-task').forEach(button => {
+          button.addEventListener('click', () => {
+            const taskId = button.getAttribute('data-id');
+            requestBarterTask(taskId);
+          });
+        });
+      }
+
+      // Function to view task details
+      function viewTaskDetails(taskId) {
+        const task = allTasks.find(t => t.id === taskId);
+        if (!task) return;
+
+        // Get modal elements
+        const modal = document.getElementById('task-modal');
+        const modalTitle = document.getElementById('modal-task-title');
+        const modalDate = document.getElementById('modal-task-date');
+        const modalPoster = document.getElementById('modal-task-poster');
+        const modalPayment = document.getElementById('modal-task-payment');
+        const modalDescription = document.getElementById('modal-task-description');
+        const modalSkills = document.getElementById('modal-task-skills');
+        const applyBtn = document.getElementById('modal-apply-btn');
+        
+        // Fill modal with task data
+        modalTitle.textContent = task.title;
+        modalDate.innerHTML = `<i class="fa-solid fa-calendar-days"></i> Due ${formatDate(task.deadline)}`;
+        modalPoster.textContent = `Posted by ${task.userName}`;
+        
+        // Set payment info
+        if (task.barter) {
+          modalPayment.className = 'modal-task-payment barter';
+          modalPayment.innerHTML = `<i class="fa-solid fa-handshake"></i> Barter: ${task.barterReturn}`;
+        } else {
+          modalPayment.className = 'modal-task-payment token';
+          modalPayment.innerHTML = `<i class="fa-solid fa-sack-dollar"></i> ${task.tokens} Tokens`;
+        }
+        
+        // Set description
+        modalDescription.innerHTML = `
+          <h3>Description</h3>
+          <p>${task.description}</p>
+        `;
+        
+        // Set skills
+        modalSkills.innerHTML = '';
+        const skillsArray = task.skills.split(',');
+        skillsArray.forEach(skill => {
+          const span = document.createElement('span');
+          span.textContent = skill.trim();
+          modalSkills.appendChild(span);
+        });
+        
+        // Check if current user is the task owner
+        const currentUser = firebase.auth().currentUser;
+        if (currentUser && task.uid === currentUser.uid) {
+          if (task.status === "Pending Confirmation") {
+            applyBtn.textContent = "Confirm Request";
+            applyBtn.disabled = false;
+            applyBtn.style.backgroundColor = "#4da6ff";
+            applyBtn.style.cursor = "pointer";
+            applyBtn.onclick = () => {
+              confirmAndCompleteTask(task.id, task.requestedBy);
+            };
+          } else if (task.status === "Completed") {
+            applyBtn.textContent = "Task Completed";
+            applyBtn.disabled = true;
+            applyBtn.style.backgroundColor = "#cccccc";
+            applyBtn.style.cursor = "not-allowed";
+          } else {
+            applyBtn.textContent = "Your Task";
+            applyBtn.disabled = true;
+            applyBtn.style.backgroundColor = "#cccccc";
+            applyBtn.style.cursor = "not-allowed";
+          }
+        } else if (task.status === "Pending Confirmation" && task.requestedBy === currentUser?.uid) {
+          applyBtn.textContent = "Waiting for Confirmation";
+          applyBtn.disabled = true;
+          applyBtn.style.backgroundColor = "#cccccc";
+          applyBtn.style.cursor = "not-allowed";
+        } else if (task.status === "Completed") {
+          applyBtn.textContent = "Task Completed";
+          applyBtn.disabled = true;
+          applyBtn.style.backgroundColor = "#cccccc";
+          applyBtn.style.cursor = "not-allowed";
+        } else {
+          applyBtn.textContent = "Request to Complete Task";
+          applyBtn.disabled = false;
+          applyBtn.style.backgroundColor = "#4da6ff";
+          applyBtn.style.cursor = "pointer";
+          applyBtn.onclick = () => {
+            applyForTask(task.id);
+          };
+        }
+        
+        // Show the modal
+        modal.style.display = 'block';
+        
+        // Close modal when clicking on close button or outside the modal
+        document.getElementById('modal-close-btn').onclick = () => {
+          modal.style.display = 'none';
+        };
+        
+        document.querySelector('.close-modal').onclick = () => {
+          modal.style.display = 'none';
+        };
+
+        // Add chat button functionality
+        document.getElementById('modal-chat-btn').onclick = () => {
+          window.location.href = `chat.html?taskId=${taskId}&userId=${task.uid}`;
+        };
+        
+        window.onclick = (event) => {
+          if (event.target === modal) {
+            modal.style.display = 'none';
+          }
+        };
+      }
+
+      // Function to handle task application
+      async function applyForTask(taskId) {
+        const user = firebase.auth().currentUser;
+        if (!user) {
+          alert('Please log in to apply for tasks');
+          return;
+        }
+
+        const task = allTasks.find(t => t.id === taskId);
+        if (!task || task.uid === user.uid) {
+          alert('Invalid task or you cannot apply to your own task');
+          return;
+        }
+
+        try {
+          const userDoc = await db.collection("users").doc(user.uid).get();
+          const applicantName = userDoc.exists ? userDoc.data().name : "Unknown User";
+
+          // Save to acceptedTasks subcollection
+          await db.collection("users")
+            .doc(user.uid)
+            .collection("acceptedTasks")
+            .doc(taskId)
+            .set({
+              ...task,
+              acceptedAt: firebase.firestore.FieldValue.serverTimestamp(),
+              status: "Pending Confirmation"
+            });
+
+          // Create notifications
+          const notificationForPoster = {
+            message: `${applicantName} has requested to complete your task "${task.title}". Please confirm if you want them to proceed.`,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            read: false,
+            taskId: taskId,
+            type: "task_request",
+            requesterId: user.uid,
+            requesterName: applicantName
+          };
+
+          const notificationForAccepter = {
+            message: `Your request to complete "${task.title}" has been sent to ${task.userName}. Waiting for confirmation.`,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            read: false,
+            taskId: taskId
+          };
+
+          await db.collection("users").doc(task.uid).collection("notifications").add(notificationForPoster);
+          await db.collection("users").doc(user.uid).collection("notifications").add(notificationForAccepter);
+
+          await db.collection("tasks").doc(taskId).update({
+            requestedBy: user.uid,
+            status: "Pending Confirmation",
+            requesterName: applicantName
+          });
+
+          alert('Task request sent successfully! Waiting for task owner confirmation.');
+          document.getElementById("task-modal").style.display = "none";
+        } catch (err) {
+          console.error("Apply failed:", err);
+          alert("Something went wrong while applying.");
+        }
+      }
+
+      // Function to confirm and complete task
+      async function confirmAndCompleteTask(taskId, requesterId) {
+        const user = firebase.auth().currentUser;
+        if (!user) {
+          alert('Please log in to confirm tasks');
+          return;
+        }
+
+        try {
+          const task = allTasks.find(t => t.id === taskId);
+          if (!task || task.uid !== user.uid) {
+            alert('You can only confirm tasks that you posted');
+            return;
+          }
+
+          // Update task status
+          await db.collection("tasks").doc(taskId).update({
+            status: "Completed",
+            completedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            completedBy: requesterId
+          });
+
+          // Create completion notifications
+          const notificationForPoster = {
+            message: `You have confirmed the completion of task "${task.title}" by ${task.requesterName}`,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            read: false,
+            taskId: taskId
+          };
+
+          const notificationForCompleter = {
+            message: `Your completion of task "${task.title}" has been confirmed by ${task.userName}`,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            read: false,
+            taskId: taskId
+          };
+
+          await db.collection("users").doc(user.uid).collection("notifications").add(notificationForPoster);
+          await db.collection("users").doc(requesterId).collection("notifications").add(notificationForCompleter);
+
+          // Update the task card UI
+          const taskCard = document.querySelector(`[data-task-id="${taskId}"]`);
+          if (taskCard) {
+            const statusBadge = document.createElement('span');
+            statusBadge.className = 'status-badge completed';
+            statusBadge.innerHTML = '<i class="fa-solid fa-check-circle"></i> Completed';
+            taskCard.querySelector('.task-header').appendChild(statusBadge);
+          }
+
+          alert('Task has been confirmed and marked as completed!');
+          document.getElementById("task-modal").style.display = "none";
+        } catch (err) {
+          console.error("Confirmation failed:", err);
+          alert("Something went wrong while confirming the task.");
+        }
+      }
+
+      // Function to handle barter task request
+      async function requestBarterTask(taskId) {
+        const user = firebase.auth().currentUser;
+        if (!user) {
+          alert('Please log in to request tasks');
+          return;
+        }
+
+        const task = allTasks.find(t => t.id === taskId);
+        if (!task || task.uid === user.uid) {
+          alert('Invalid task or you cannot request your own task');
+          return;
+        }
+
+        try {
+          // Check if user has posted any barter tasks
+          const userTasksSnapshot = await db.collection("tasks")
+            .where("uid", "==", user.uid)
+            .where("barter", "==", true)
+            .get();
+
+          if (userTasksSnapshot.empty) {
+            alert('You must post at least one barter task before requesting to complete other barter tasks.');
+            return;
+          }
+
+          const userDoc = await db.collection("users").doc(user.uid).get();
+          const applicantName = userDoc.exists ? userDoc.data().name : "Someone";
+
+          // Save to acceptedTasks subcollection
+          await db.collection("users")
+            .doc(user.uid)
+            .collection("acceptedTasks")
+            .doc(taskId)
+            .set({
+              ...task,
+              acceptedAt: firebase.firestore.FieldValue.serverTimestamp(),
+              status: "Requested"
+            });
+
+          // Create notifications
+          const notificationForPoster = {
+            message: `${applicantName} has requested to do your barter task "${task.title}"`,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            read: false
+          };
+
+          const notificationForRequester = {
+            message: `You have requested to do the barter task "${task.title}" posted by ${task.userName}`,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            read: false
+          };
+
+          await db.collection("users").doc(task.uid).collection("notifications").add(notificationForPoster);
+          await db.collection("users").doc(user.uid).collection("notifications").add(notificationForRequester);
+
+          await db.collection("tasks").doc(taskId).update({
+            requestedBy: user.uid,
+            status: "Requested"
+          });
+
+          alert('Task request sent successfully! Both users have been notified.');
+        } catch (err) {
+          console.error("Request failed:", err);
+          alert("Something went wrong while sending the request.");
+        }
+      }
+
+      // Sort functionality
+      sortSelect.addEventListener('change', () => {
+        const sortValue = sortSelect.value;
+        let sortedTasks = [...allTasks];
+
+        switch (sortValue) {
+          case 'newest':
+            sortedTasks.sort((a, b) => b.createdAt - a.createdAt);
+            break;
+          case 'deadline':
+            sortedTasks.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+            break;
+          case 'tokens-high':
+            sortedTasks.sort((a, b) => (b.tokens || 0) - (a.tokens || 0));
+            break;
+          case 'tokens-low':
+            sortedTasks.sort((a, b) => (a.tokens || 0) - (b.tokens || 0));
+            break;
+        }
+
+        renderTasks(sortedTasks);
+      });
+
+      // Initialize by fetching tasks
+      fetchTasks();
+    });
+  </script>
+</body>
+</html>

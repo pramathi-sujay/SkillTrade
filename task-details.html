@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Task Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .task-card {
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px auto;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+    }
+
+    .task-title {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .view-button {
+      background-color: #4f46e5;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .view-button:hover {
+      background-color: #4338ca;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+      position: relative;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .modal-title {
+      font-size: 1.4rem;
+      margin-bottom: 15px;
+    }
+
+    .modal-content p {
+      margin: 10px 0;
+    }
+
+    .button-container {
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+    }
+
+    .modal-button {
+      padding: 8px 16px;
+      border: none;
+      background-color: #4f46e5;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .modal-button:hover {
+      background-color: #4338ca;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .file-input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+  </style>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC4rWcnOVhEe25tLftQFI32oMUl4fSp7zk",
+      authDomain: "skilltrade-67ea2.firebaseapp.com",
+      projectId: "skilltrade-67ea2",
+      storageBucket: "skilltrade-67ea2.appspot.com",
+      messagingSenderId: "381930307884",
+      appId: "1:381930307884:web:99f0db9878cb472edd2c89",
+      measurementId: "G-PV0G2TPBRE"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const taskContainer = document.createElement('div');
+    document.body.insertBefore(taskContainer, document.querySelector('.modal-overlay'));
+
+    async function loadTasks() {
+      const querySnapshot = await getDocs(collection(db, "tasks"));
+      querySnapshot.forEach((doc) => {
+        const task = doc.data();
+        const card = document.createElement('div');
+        card.className = 'task-card';
+        card.innerHTML = `
+          <div class="task-title">${task.title}</div>
+          <p>Description: ${task.description}</p>
+          <p>Deadline: ${task.deadline}</p>
+          <p>Reward: ${task.reward}</p>
+          <button class="view-button">View Details</button>
+        `;
+        card.querySelector('.view-button').onclick = () => openModal(task);
+        taskContainer.appendChild(card);
+      });
+    }
+
+    window.openModal = function(task) {
+      document.getElementById('modalTitle').textContent = task.title;
+      document.getElementById('modalDescription').textContent = task.description;
+      document.getElementById('modalDeadline').textContent = task.deadline;
+      document.getElementById('modalReward').textContent = task.reward;
+      document.getElementById('taskModal').style.display = 'flex';
+    }
+
+    window.closeModal = function() {
+      document.getElementById('taskModal').style.display = 'none';
+    }
+
+    window.submitFile = function() {
+      const fileInput = document.getElementById('fileInput');
+      if (fileInput.files.length > 0) {
+        alert('File submitted: ' + fileInput.files[0].name);
+        // Handle file upload logic here
+      } else {
+        alert('No file selected!');
+      }
+    }
+
+    window.completeTask = function() {
+      alert('Task Completed!');
+      // Handle task completion logic here
+    }
+
+    loadTasks();
+  </script>
+</head>
+<body>
+
+  <h1>Posted Tasks</h1>
+
+  <!-- Modal Structure -->
+  <div class="modal-overlay" id="taskModal">
+    <div class="modal-container">
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <h2 class="modal-title" id="modalTitle">Task Title</h2>
+      <div class="modal-content">
+        <p><strong>Description:</strong> <span id="modalDescription"></span></p>
+        <p><strong>Deadline:</strong> <span id="modalDeadline"></span></p>
+        <p><strong>Reward:</strong> <span id="modalReward"></span></p>
+        <!-- File Input for Attachment -->
+        <label for="fileInput">Submit Your File:</label>
+        <input type="file" id="fileInput" class="file-input" />
+      </div>
+      <div class="button-container">
+        <button class="modal-button" onclick="submitFile()">Submit File</button>
+        <button class="modal-button" onclick="completeTask()">Complete Task</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

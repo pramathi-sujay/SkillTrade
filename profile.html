@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkillTrade - My Profile</title>
+  <link rel="stylesheet" href="css/profile.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+     body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .task-card {
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px auto;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+    }
+
+    .task-title {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .view-button {
+      background-color: #4f46e5;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .view-button:hover {
+      background-color: #4338ca;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+      position: relative;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .modal-title {
+      font-size: 1.4rem;
+      margin-bottom: 15px;
+    }
+
+    .modal-content p {
+      margin: 10px 0;
+    }
+
+    .button-container {
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+    }
+
+    .modal-button {
+      padding: 8px 16px;
+      border: none;
+      background-color: #4f46e5;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .modal-button:hover {
+      background-color: #4338ca;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .file-input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <img src="logo.png" alt="SkillTrade Logo" class="logo">
+    <nav>
+      <ul>
+        <li><a href="index.html"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="#" style="color:#4da6ff;"><i class="fa-solid fa-user"></i> My Profile</a></li>
+        <li><a href="post.html"><i class="fa-solid fa-plus"></i> Post Task</a></li>
+        <li><a href="wallet.html"><i class="fa-solid fa-wallet"></i> Wallet</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- Main content with reversed layout -->
+<div class="main-content">
+  <!-- PROFILE SECTION - Now on the right -->
+  <section class="profile-section">
+    <div class="profile-card">
+      <div class="profile-picture-container">
+        <img src="https://static.vecteezy.com/system/resources/thumbnails/036/280/650/small_2x/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg" alt="Profile Picture" class="profile-picture" id="profilePic" />
+      </div>
+      <h2 contenteditable="false" id="name" class="editable-placeholder" data-placeholder="Enter your name"></h2>
+      
+      <!-- Uniform containers for bio and skills -->
+      <div class="placeholder-container">
+        <p contenteditable="false" id="bio" class="editable-placeholder" data-placeholder="Enter your bio or description"></p>
+      </div>
+      
+      <div class="skills-tags">
+        <div id="skills" contenteditable="false" class="editable-placeholder" data-placeholder="Add your skills (e.g., 'Web Design, JavaScript, Teaching')"></div>
+      </div>
+
+      <div class="profile-stats">
+        <span class="tokens"><i class="fa-solid fa-sack-dollar"></i> <span id="tokenCount">0</span> Tokens</span>
+        <button class="edit-profile" id="editBtn">Edit Profile</button>
+        <button id="logoutBtn" class="logout-btn">Logout</button>
+        <button class="save-profile" id="saveBtn" style="display: none;">Save</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- DASHBOARD SECTION - Now on the left and wider -->
+  <section class="dashboard-section">
+    <div class="dashboard-card">
+      <h2>My Dashboard</h2>
+      <div class="filters">
+        <button class="tab-btn" data-tab="accepted">Tasks I Accepted</button>
+        <button class="tab-btn active" data-tab="posted">Tasks I Posted</button>
+      </div>
+
+      <div class="task-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Task Title</th>
+              <th>Description</th>
+              <th>Skills Required</th>
+              <th>Deadline</th>
+              <th>Reward</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="accepted-tasks" style="display: none;">
+            <!-- Accepted tasks will be dynamically inserted here -->
+            <tr>
+              <td colspan="7" class="empty-state">You haven't accepted any tasks yet.</td>
+            </tr>
+          </tbody>
+          <tbody id="posted-tasks">
+            <!-- Posted tasks will be dynamically inserted here -->
+            <tr>
+              <td colspan="7" class="empty-state">You haven't posted any tasks yet.</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <!-- Notification Popup -->
+<div id="popup-notification" style="display:none; position:fixed; bottom:20px; right:20px; background:#fff; border:1px solid #ccc; border-radius:8px; padding:12px 16px; box-shadow:0 2px 10px rgba(0,0,0,0.1); z-index:1000; max-width:300px;">
+  <span id="popup-message"></span>
+  <button onclick="closePopup()" style="margin-left:10px; background:#4da6ff; color:white; border:none; padding:4px 8px; border-radius:4px;">OK</button>
+</div>
+        <!-- Mobile view task cards container -->
+        <div id="mobile-posted-tasks" class="task-cards"></div>
+        <div id="mobile-accepted-tasks" class="task-cards" style="display: none;"></div>
+      </div>
+    </div>
+    <!--modal structure-->
+    <div class="modal-overlay" id="taskModal">
+      <div class="modal-container">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <h2 class="modal-title" id="modalTitle">Task Title</h2>
+        <div class="modal-content">
+          <p><strong>Description:</strong> <span id="modalDescription"></span></p>
+          <p><strong>Deadline:</strong> <span id="modalDeadline"></span></p>
+          <p><strong>Reward:</strong> <span id="modalReward"></span></p>
+          <!-- File Input for Attachment -->
+          <label for="fileInput">Submit Your File:</label>
+          <input type="file" id="fileInput" class="file-input" />
+        </div>
+        <div class="button-container">
+          <button class="modal-button" onclick="submitFile()">Submit File</button>
+          <button class="modal-button" onclick="completeTask()">Complete Task</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyC4rWcnOVhEe25tLftQFI32oMUl4fSp7zk",
+    authDomain: "skilltrade-67ea2.firebaseapp.com",
+    projectId: "skilltrade-67ea2",
+    storageBucket: "skilltrade-67ea2.appspot.com",
+    messagingSenderId: "381930307884",
+    appId: "1:381930307884:web:99f0db9878cb472edd2c89",
+    measurementId: "G-PV0G2TPBRE"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // Auth State Change Handler
+  firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      const uid = user.uid;
+      loadUserProfile(uid);
+      loadUserTaskData(uid);
+    } else {
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 500);
+    }
+  });
+
+  
+
+  // Load User Profile Data
+  function loadUserProfile(uid) {
+    const userDocRef = firebase.firestore().collection("user_profiles").doc(uid);
+
+    // Always get name from 'users' collection
+    firebase.firestore().collection("users").doc(uid).get()
+      .then((userDoc) => {
+        if (userDoc.exists) {
+          const userData = userDoc.data();
+          const name = userData.name || "";
+          document.getElementById("name").textContent = name;
+
+          // Also store name in user_profiles
+          userDocRef.set({ name }, { merge: true });
+        }
+      }).catch((error) => {
+        console.error("Error fetching name from users:", error);
+      });
+
+    // Fetch bio and skills from user_profiles
+    userDocRef.get().then((doc) => {
+      if (doc.exists) {
+        const data = doc.data();
+        document.getElementById("bio").textContent = data.bio || "";
+        document.getElementById("skills").textContent = data.skills || "";
+        
+        // Update token count if available
+        if (data.tokens) {
+          document.getElementById("tokenCount").textContent = data.tokens;
+        }
+      }
+    }).catch((error) => {
+      console.error("Error fetching user profile:", error);
+    });
+  }
+  
+  // Load User Task Data - UPDATED to fetch directly from tasks collection
+  function loadUserTaskData(uid) {
+    // Fetch tasks the user has accepted
+    db.collection("tasks")
+      .where("acceptedBy", "==", uid)
+      .get()
+      .then((querySnapshot) => {
+        const acceptedTasksContainer = document.getElementById("accepted-tasks");
+        const mobileAcceptedTasksContainer = document.getElementById("mobile-accepted-tasks");
+        
+        acceptedTasksContainer.innerHTML = "";
+        mobileAcceptedTasksContainer.innerHTML = "";
+        
+        if (querySnapshot.empty) {
+          acceptedTasksContainer.innerHTML = '<tr><td colspan="7" class="empty-state">You haven\'t accepted any tasks yet.</td></tr>';
+          mobileAcceptedTasksContainer.innerHTML = '<div class="empty-state">You haven\'t accepted any tasks yet.</div>';
+          return;
+        }
+        
+        querySnapshot.forEach((doc) => {
+          const task = doc.data();
+          const taskId = doc.id;
+          
+          // Fetch poster's name
+          db.collection("users").doc(task.postedBy).get()
+            .then((posterDoc) => {
+              const posterName = posterDoc.exists ? posterDoc.data().name : "Unknown User";
+              
+              // Add row to table view
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${task.title}</td>
+                <td class="task-description">${task.description}</td>
+                <td>${task.skills}</td>
+                <td><i class="fa fa-calendar-alt"></i> ${formatDate(task.deadline)}</td>
+                <td>${getRewardDisplay(task)}</td>
+                <td><span class="status ${task.status ? task.status.toLowerCase().replace(' ', '-') : 'open'}">${task.status || 'Open'}</span></td>
+                <td>
+                  <button class="view-button">View Details</button>
+                  ${(!task.status || task.status !== 'Completed') ? `<button class="complete-btn" onclick="markTaskComplete('${taskId}')">Mark Complete</button>` : ''}
+                </td>
+              `;
+              acceptedTasksContainer.appendChild(row);
+              
+              // Add card to mobile view
+              const card = document.createElement("div");
+              card.className = "task-card";
+              card.innerHTML = `
+                <div class="task-card-header">
+                  <div class="task-card-title">${task.title}</div>
+                  <span class="status ${task.status ? task.status.toLowerCase().replace(' ', '-') : 'open'}">${task.status || 'Open'}</span>
+                </div>
+                <div class="task-card-body">
+                  <p>${task.description.substring(0, 100)}${task.description.length > 100 ? '...' : ''}</p>
+                </div>
+                <div class="task-card-footer">
+                  <div>
+                    <div>${getRewardDisplay(task)}</div>
+                    <div><i class="fa fa-calendar-alt"></i> ${formatDate(task.deadline)}</div>
+                  </div>
+                  <div>
+                    <button class="view-button" onclick="viewTaskDetails('${taskId}')">View Details</button>
+                    ${(!task.status || task.status !== 'Completed') ? `<button class="complete-btn" onclick="markTaskComplete('${taskId}')">Complete</button>` : ''}
+                  </div>
+                </div>
+              `;
+              mobileAcceptedTasksContainer.appendChild(card);
+            });
+        });
+      });
+      
+    // Fetch tasks the user has posted - UPDATED to use direct query on tasks collection
+    db.collection("tasks")
+      .where("uid", "==", uid) // Use uid field from the post form
+      .get()
+      .then((querySnapshot) => {
+        const postedTasksContainer = document.getElementById("posted-tasks");
+        const mobilePostedTasksContainer = document.getElementById("mobile-posted-tasks");
+        
+        postedTasksContainer.innerHTML = "";
+        mobilePostedTasksContainer.innerHTML = "";
+        
+        if (querySnapshot.empty) {
+          postedTasksContainer.innerHTML = '<tr><td colspan="7" class="empty-state">You haven\'t posted any tasks yet.</td></tr>';
+          mobilePostedTasksContainer.innerHTML = '<div class="empty-state">You haven\'t posted any tasks yet.</div>';
+          return;
+        }
+        
+        querySnapshot.forEach((doc) => {
+          const task = doc.data();
+          const taskId = doc.id;
+          
+          // Get the assignee name if the task has been accepted
+          const getAssigneeName = task.acceptedBy 
+            ? db.collection("users").doc(task.acceptedBy).get()
+                .then(userDoc => userDoc.exists ? userDoc.data().name : "Unknown User")
+            : Promise.resolve("Not assigned");
+            
+          getAssigneeName.then(assigneeName => {
+            // Add row to table view
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${task.title}</td>
+              <td class="task-description">${task.description}</td>
+              <td>${task.skills}</td>
+              <td><i class="fa fa-calendar-alt"></i> ${formatDate(task.deadline)}</td>
+              <td>${getRewardDisplay(task)}</td>
+              <td><span class="status ${task.status ? task.status.toLowerCase().replace(' ', '-') : 'open'}">${task.status || 'Open'}</span></td>
+              <td>
+                <button class="view-button" onclick="viewTaskDetails('${taskId}')">View Details</button>
+                ${(!task.status || task.status === 'Open') ? `<button class="icon-btn delete-btn" onclick="deleteTask('${taskId}')"><i class="fa fa-trash"></i></button>` : ''}
+              </td>
+            `;
+            postedTasksContainer.appendChild(row);
+            
+            // Add card to mobile view
+            const card = document.createElement("div");
+            card.className = "task-card";
+            card.innerHTML = `
+              <div class="task-card-header">
+                <div class="task-card-title">${task.title}</div>
+                <span class="status ${task.status ? task.status.toLowerCase().replace(' ', '-') : 'open'}">${task.status || 'Open'}</span>
+              </div>
+              <div class="task-card-body">
+                <p>${task.description.substring(0, 100)}${task.description.length > 100 ? '...' : ''}</p>
+              </div>
+              <div class="task-card-footer">
+                <div>
+                  <div>${getRewardDisplay(task)}</div>
+                  <div><i class="fa fa-calendar-alt"></i> ${formatDate(task.deadline)}</div>
+                </div>
+                <div>
+                  <button class="view-button" onclick="viewTaskDetails('${taskId}')">View Details</button>
+                </div>
+              </div>
+            `;
+            mobilePostedTasksContainer.appendChild(card);
+          });
+        });
+      })
+      .catch(error => {
+        console.error("Error fetching posted tasks:", error);
+      });
+  }
+
+  // Helper function to display reward (tokens or barter)
+  function getRewardDisplay(task) {
+    if (task.barter) {
+      return `<span class="task-rewards task-barter"><i class="fas fa-exchange-alt"></i> Barter: ${task.barterReturn}</span>`;
+    } else {
+      return `<span class="task-rewards task-tokens"><i class="fas fa-coins"></i> ${task.tokens} Tokens</span>`;
+    }
+  }
+
+  // Profile Edit Functions
+  document.getElementById("saveBtn").addEventListener("click", function () {
+    const user = firebase.auth().currentUser;
+    if (!user) return;
+
+    const name = document.getElementById("name").textContent.trim();
+    const bio = document.getElementById("bio").textContent.trim();
+    const skills = document.getElementById("skills").textContent.trim();
+
+    const profileData = { name, bio, skills };
+
+    firebase.firestore().collection("user_profiles").doc(user.uid).set(profileData, { merge: true })
+      .then(() => {
+        alert("Profile saved!");
+        document.getElementById("saveBtn").style.display = "none";
+        document.getElementById("bio").contentEditable = false;
+        document.getElementById("skills").contentEditable = false;
+      })
+      .catch((error) => {
+        console.error("Error saving profile:", error);
+      });
+  });
+
+  document.getElementById("editBtn").addEventListener("click", function () {
+    // Do NOT make name editable
+    document.getElementById("bio").contentEditable = true;
+    document.getElementById("skills").contentEditable = true;
+    document.getElementById("saveBtn").style.display = "inline-block";
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", function () {
+    firebase.auth().signOut().then(() => {
+      window.location.href = "login.html";
+    }).catch((error) => {
+      console.error("Logout error:", error);
+    });
+  });
+
+  // Dashboard Tab Navigation
+  document.querySelectorAll('.tab-btn').forEach(button => {
+    button.addEventListener('click', () => {
+      // Remove active class from all buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // Add active class to clicked button
+      button.classList.add('active');
+      
+      // Show corresponding tab content
+      const tabName = button.getAttribute('data-tab');
+      
+      // Hide all table tbody elements
+      document.querySelectorAll('tbody').forEach(tbody => {
+        tbody.style.display = 'none';
+      });
+      
+      // Show selected tbody
+      document.getElementById(`${tabName}-tasks`).style.display = '';
+      
+      // Handle mobile view as well
+      document.querySelectorAll('.task-cards').forEach(container => {
+        container.style.display = 'none';
+      });
+      
+      document.getElementById(`mobile-${tabName}-tasks`).style.display = '';
+    });
+  });
+
+  // Helper Functions
+  function formatDate(timestamp) {
+    if (!timestamp) return "No deadline";
+    
+    // Check if timestamp is a Firebase Timestamp object
+    if (timestamp.toDate) {
+      timestamp = timestamp.toDate();
+    } else if (typeof timestamp === 'string' || typeof timestamp === 'number') {
+      timestamp = new Date(timestamp);
+    }
+    
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${months[timestamp.getMonth()]} ${timestamp.getDate()}, ${timestamp.getFullYear()}`;
+  }
+
+  // Task Management Functions
+  // function viewTaskDetails(taskId) {
+  //   // Redirect to task details page
+  //   window.location.href = `viewTaskDetails('${taskId})`;
+  // }
+
+  function markTaskComplete(taskId) {
+    const user = firebase.auth().currentUser;
+    if (!user) return;
+    
+    db.collection("tasks").doc(taskId).update({
+      status: "Completed",
+      completedAt: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => {
+      alert("Task marked as completed!");
+      loadUserTaskData(user.uid);
+    })
+    .catch((error) => {
+      console.error("Error completing task:", error);
+    });
+  }
+
+  function viewTaskDetails(taskId) {
+  // Get references to modal elements
+  const modal = document.getElementById("taskModal");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalDescription = document.getElementById("modalDescription");
+  const modalDeadline = document.getElementById("modalDeadline");
+  const modalReward = document.getElementById("modalReward");
+
+  // Fetch task data from Firestore
+  db.collection("tasks").doc(taskId).get().then((doc) => {
+    if (doc.exists) {
+      const task = doc.data();
+
+      // Populate modal content
+      modalTitle.textContent = task.title || "Untitled Task";
+      modalDescription.textContent = task.description || "No description provided.";
+      modalDeadline.textContent = formatDate(task.deadline);
+      modalReward.innerHTML = getRewardDisplay(task);
+
+      // Display the modal
+      modal.style.display = "flex";
+    } else {
+      alert("Task not found.");
+    }
+  }).catch((error) => {
+    console.error("Error fetching task:", error);
+  });
+}
+
+// Close modal helper
+function closeModal() {
+  document.getElementById("taskModal").style.display = "none";
+}
+
+
+  function deleteTask(taskId) {
+    if (confirm("Are you sure you want to delete this task?")) {
+      db.collection("tasks").doc(taskId).delete()
+        .then(() => {
+          alert("Task deleted successfully!");
+          const user = firebase.auth().currentUser;
+          loadUserTaskData(user.uid);
+        })
+        .catch((error) => {
+          console.error("Error deleting task:", error);
+        });
+    }
+  }
+</script>
+
+<script>
+const taskContainer = document.createElement('div');
+    document.body.insertBefore(taskContainer, document.querySelector('.modal-overlay'));
+
+    async function loadTasks() {
+      const querySnapshot = await getDocs(collection(db, "tasks"));
+      querySnapshot.forEach((doc) => {
+        const task = doc.data();
+        const card = document.createElement('div');
+        card.className = 'task-card';
+        card.innerHTML = `
+          <div class="task-title">${task.title}</div>
+          <p>Description: ${task.description}</p>
+          <p>Deadline: ${task.deadline}</p>
+          <p>Reward: ${task.reward}</p>
+          <button class="view-button">View Details</button>
+        `;
+        card.querySelector('.view-button').onclick = () => openModal(task);
+        taskContainer.appendChild(card);
+      });
+    }
+
+    window.openModal = function(task) {
+      document.getElementById('modalTitle').textContent = task.title;
+      document.getElementById('modalDescription').textContent = task.description;
+      document.getElementById('modalDeadline').textContent = task.deadline;
+      document.getElementById('modalReward').textContent = task.reward;
+      document.getElementById('taskModal').style.display = 'flex';
+    }
+
+    window.closeModal = function() {
+      document.getElementById('taskModal').style.display = 'none';
+    }
+
+    window.submitFile = function() {
+      const fileInput = document.getElementById('fileInput');
+      if (fileInput.files.length > 0) {
+        alert('File submitted: ' + fileInput.files[0].name);
+        // Handle file upload logic here
+      } else {
+        alert('No file selected!');
+      }
+    }
+
+    window.completeTask = function() {
+      alert('Task Completed!');
+      // Handle task completion logic here
+    }
+
+    loadTasks();
+  </script>
+
+</body>
+</html>

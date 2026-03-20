@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Toki Exchange</title>
+  <style>
+    /* Font and Base */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, );
+      color: #333;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: linear-gradient(90deg, #ffffff, #f0f8ff);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e0e0e0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    
+    .navbar-logo {
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+      font-size: 1.3rem;
+    }
+    
+    .navbar-logo img {
+      width: 28px;
+      margin-right: 8px;
+    }
+    
+    .logo-accent {
+      color: #0288d1; /* blue accent to match theme */
+    }
+    
+    .navbar-links {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .navbar-links li a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      padding: 6px 12px;
+      transition: background-color 0.2s, color 0.2s;
+      border-radius: 8px;
+    }
+    
+    .navbar-links li a:hover,
+    .navbar-links li a.active {
+      background-color: #e0f7fa;
+      color: #0288d1;
+    }
+
+    .active-link {
+      color: #0288d1 !important;
+    }
+
+    /* Container - WhatsApp-style window */
+    .main-container {
+      width: 80%; /* or 70%, adjust to your liking */
+      max-width: 1200px; /* optional: keep an upper limit */
+      padding: 2rem;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.15);
+      margin: 2rem auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* WhatsApp-style header */
+    .chat-header {
+      background: linear-gradient(90deg, #0288d1, #03a9f4);
+      margin: -2rem -2rem 1.5rem -2rem;
+      padding: 1rem 2rem;
+      color: white;
+      border-radius: 20px 20px 0 0;
+    }
+
+    .chat-header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    /* Card (e.g. form wrapper) */
+    .card {
+      margin-top: 1.5rem;
+      background: #f9f9f9;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    /* Form elements */
+    .form-group {
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #555;
+      text-align: left;
+    }
+
+    /* Inputs */
+    input {
+      display: block;
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: white;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      box-sizing: border-box;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input:focus {
+      border-color: #0288d1;
+      box-shadow: 0 0 0 2px rgba(2, 136, 209, 0.2);
+      outline: none;
+    }
+
+    /* Email suggestions */
+    .email-suggestions {
+      position: absolute;
+      background: white;
+      width: 100%;
+      max-height: 150px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      z-index: 1000;
+      display: none;
+    }
+
+    .email-suggestion-item {
+      padding: 10px 16px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .email-suggestion-item:hover {
+      background-color: #e3f2fd;
+    }
+
+    /* Token input wrapper */
+    .token-input-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .token-input {
+      flex: 1;
+    }
+
+    .token-suggestions {
+      display: flex;
+      gap: 16px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    .token-suggestion {
+      background: #e3f2fd;
+      color: #0288d1;
+      border: 1px solid #0288d1;
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .token-suggestion:hover {
+      background: #0288d1;
+      color: white;
+    }
+
+    /* Two-column layout */
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    /* Buttons */
+    button {
+      padding: 12px 30px;
+      background: linear-gradient(90deg, #0288d1, #03a9f4);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+      transition: all 0.3s;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    button:hover {
+      background: linear-gradient(90deg, #0277bd, #0288d1);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      transform: translateY(-1px);
+    }
+
+    button.logout {
+      background: linear-gradient(90deg, #e53935, #f44336);
+    }
+
+    button.logout:hover {
+      background: linear-gradient(90deg, #d32f2f, #e53935);
+    }
+
+    /* Toki currency display */
+    .toki-balance {
+      background: linear-gradient(90deg, #81d4fa, #4fc3f7);
+      color: #01579b;
+      padding: 15px;
+      border-radius: 12px;
+      font-weight: 600;
+      margin: 1rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .toki-coin {
+      font-size: 1.5rem;
+      margin-left: 8px;
+    }
+
+    /* Frozen tokens section */
+    .frozen-tokens {
+      margin-top: 20px;
+      background: #f1f8fe;
+      border-radius: 12px;
+      padding: 15px;
+      border-left: 4px solid #0288d1;
+    }
+
+    .frozen-tokens h4 {
+      margin-top: 0;
+      color: #0288d1;
+    }
+
+    .frozen-token-item {
+      background: white;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .frozen-token-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .token-status {
+      font-size: 0.85rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .token-status.pending {
+      background: #fff8e1;
+      color: #f57f17;
+    }
+
+    /* Utility Classes */
+    .text-center {
+      text-align: center;
+    }
+    
+    /* Content area */
+    .content-area {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-logo">
+      <img src="skilltrade1\logo.png" alt="SkillTrade Logo">
+      <span>Skill<span class="logo-accent">Trade</span></span>
+    </div>
+    <ul class="navbar-links">
+      <li><a href="index.html" class="active-link"><i class="fa-solid fa-house"></i> Home</a></li>
+      <li><a href="profile.html"><i class="fa-solid fa-user"></i> My Profile</a></li>
+      <li><a href="post.html"><i class="fa-solid fa-plus"></i> Post Task</a></li>
+      <li><a href="wallet.html"><i class="fa-solid fa-wallet"></i> Wallet</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main content -->
+  <div class="content-area">
+    <div class="main-container">
+      <div class="chat-header">
+        <h1><i class="fa-solid fa-coins"></i> Toki Exchange Platform</h1>
+      </div>
+
+      <div id="login" class="card">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="Enter your email" autocomplete="off">
+          <div id="email-suggestions" class="email-suggestions"></div>
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Enter your password">
+        </div>
+        
+        <button onclick="login()">Login</button>
+      </div>
+
+      <div id="profile" class="card" style="display:none;">
+        <h3> Welcome Back! 😊✨ <span id="user-email" style="color:white"></span></h3>
+        
+        <div class="toki-balance">
+          Your Toki Balance is: <strong><span id="balance">0</span></strong> 🪙
+        </div>
+
+        <div class="form-group">
+          <p>               </p>
+          <label for="earn-toki-amount" style="font-weight:900;">PURCHASE TOKIs</label>
+
+          <p>               </p>
+          <div class="token-input-wrapper">
+            <input type="number" id="earn-toki-amount" placeholder="Purchase Tokis ⛃⛂" class="token-input" min="1" value="10">
+          </div>
+          <div class="token-suggestions">
+            <span class="token-suggestion" onclick="setEarnTokenAmount(5)">5 TOKIs</span>
+            <span class="token-suggestion" onclick="setEarnTokenAmount(10)">10 TOKIs</span>
+            <span class="token-suggestion" onclick="setEarnTokenAmount(20)">20 TOKIs</span>
+          </div>
+          <button onclick="completeTask()">PURCHASE🪙</button>
+        </div>
+
+        <h4>Approve Task</h4>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="other-user-id">Reciever's Email</label>
+            <input type="text" id="other-user-id" placeholder="Enter email" autocomplete="off">
+            <div id="user-suggestions" class="email-suggestions"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="send-toki-amount">Toki Amount</label>
+            <input type="number" id="send-toki-amount" placeholder="Enter amount" min="1" value="10">
+            <div class="token-suggestions">
+              <span class="token-suggestion" onclick="setSendTokenAmount(5)">5 TOKIs</span>
+              <span class="token-suggestion" onclick="setSendTokenAmount(10)">10 TOKIs</span>
+              <span class="token-suggestion" onclick="setSendTokenAmount(15)">15 TOKIs</span>
+            </div>
+          </div>
+        </div>
+        
+        <button onclick="freezeTokens()" id="approve-task-btn">Initiate TOKIs transaction</button>
+
+        <h4>Complete Task</h4>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="task-id">Task ID</label>
+            <input type="text" id="task-id" placeholder="Enter Task ID" autocomplete="off">
+          </div>
+          
+          <div class="form-group">
+            <label for="complete-toki-amount">Toki Amount</label>
+            <input type="number" id="complete-toki-amount" placeholder="Enter amount" min="1" value="10" disabled>
+          </div>
+        </div>
+        
+        <button onclick="completeTokenTransaction()" id="complete-task-btn" disabled>Complete TOKIs transaction</button>
+        <button onclick="logout()" class="logout">Logout</button>
+        
+        <!-- Frozen Tokens Section -->
+        <div id="frozen-tokens-container" class="frozen-tokens" style="display:none;">
+          <h4>Pending Token Transactions</h4>
+          <div id="frozen-tokens-list">
+            <!-- Frozen tokens will be displayed here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Modal -->
+  <div id="notif-modal" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.25); justify-content:center; align-items:center;">
+    <div style="background:white; border-radius:12px; padding:2rem; min-width:320px; box-shadow:0 4px 24px rgba(0,0,0,0.18); position:relative;">
+      <h3 id="notif-title" style="margin-top:0;">Notification</h3>
+      <div id="notif-message" style="margin-bottom:1rem;"></div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <input id="notif-copy-input" type="text" readonly style="flex:1; padding:8px; font-size:1rem; border:1px solid #ddd; border-radius:6px; background:#f5f5f5;">
+        <button onclick="copyNotifInput()" style="padding:8px 16px; background:#0288d1; color:white; border:none; border-radius:6px; cursor:pointer;">Copy</button>
+      </div>
+      <button onclick="closeNotifModal()" style="margin-top:1.5rem; padding:8px 24px; background:#eee; border:none; border-radius:6px; cursor:pointer; float:right;">Close</button>
+    </div>
+  </div>
+
+  <script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { 
+      getAuth, 
+      signInWithEmailAndPassword, 
+      signOut, 
+      onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+    import { 
+      getFirestore, 
+      doc, 
+      setDoc, 
+      getDoc, 
+      onSnapshot, 
+      runTransaction, 
+      query, 
+      where, 
+      collection, 
+      getDocs,
+      addDoc,
+      serverTimestamp,
+      orderBy,
+      limit 
+    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    console.log("🔥 app.js is running");
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyC4rWcnOVhEe25tLftQFI32oMUl4fSp7zk",
+      authDomain: "skilltrade-67ea2.firebaseapp.com",
+      projectId: "skilltrade-67ea2",
+      storageBucket: "skilltrade-67ea2.appspot.com",
+      messagingSenderId: "381930307884",
+      appId: "1:381930307884:web:99f0db9878cb472edd2c89",
+      measurementId: "G-PV0G2TPBRE"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    
+    // Sample user emails for suggestion (in a real app, these would come from the database)
+    const sampleEmails = [
+      "john.doe@example.com",
+      "jane.smith@example.com",
+      "user1@skillshare.com",
+      "developer@toki.com",
+      "designer@creative.com",
+      "sarah.johnson@gmail.com",
+      "mark.wilson@outlook.com",
+      "tech.expert@yahoo.com",
+      "webdev@company.net",
+      "alex.morgan@business.org"
+    ];
+    
+    // Email suggestion functionality
+    document.getElementById("email").addEventListener("input", function(e) {
+      const inputValue = e.target.value.toLowerCase();
+      const suggestionsDiv = document.getElementById("email-suggestions");
+      
+      if (inputValue.length < 2) {
+        suggestionsDiv.style.display = "none";
+        return;
+      }
+      
+      const matchingEmails = sampleEmails.filter(email => 
+        email.toLowerCase().includes(inputValue)
+      );
+      
+      suggestionsDiv.innerHTML = "";
+      
+      if (matchingEmails.length > 0) {
+        matchingEmails.forEach(email => {
+          const div = document.createElement("div");
+          div.className = "email-suggestion-item";
+          div.textContent = email;
+          div.addEventListener("click", () => {
+            document.getElementById("email").value = email;
+            suggestionsDiv.style.display = "none";
+          });
+          suggestionsDiv.appendChild(div);
+        });
+        suggestionsDiv.style.display = "block";
+      } else {
+        suggestionsDiv.style.display = "none";
+      }
+    });
+    
+    // User email suggestion for token transfer
+    document.getElementById("other-user-id").addEventListener("input", function(e) {
+      const inputValue = e.target.value.toLowerCase();
+      const suggestionsDiv = document.getElementById("user-suggestions");
+      
+      if (inputValue.length < 2) {
+        suggestionsDiv.style.display = "none";
+        return;
+      }
+      
+      const matchingEmails = sampleEmails.filter(email => 
+        email.toLowerCase().includes(inputValue)
+      );
+      
+      suggestionsDiv.innerHTML = "";
+      
+      if (matchingEmails.length > 0) {
+        matchingEmails.forEach(email => {
+          const div = document.createElement("div");
+          div.className = "email-suggestion-item";
+          div.textContent = email;
+          div.addEventListener("click", () => {
+            document.getElementById("other-user-id").value = email;
+            suggestionsDiv.style.display = "none";
+          });
+          suggestionsDiv.appendChild(div);
+        });
+        suggestionsDiv.style.display = "block";
+      } else {
+        suggestionsDiv.style.display = "none";
+      }
+    });
+    
+    // Functions for token amount suggestions
+    window.setEarnTokenAmount = function(amount) {
+      document.getElementById("earn-toki-amount").value = amount;
+    };
+    
+    window.setSendTokenAmount = function(amount) {
+      document.getElementById("send-toki-amount").value = amount;
+    };
+
+    window.setCompleteTokenAmount = function(amount) {
+      document.getElementById("complete-toki-amount").value = amount;
+    };
+
+    // Add event listeners for mutual exclusivity
+    document.getElementById("other-user-id").addEventListener("input", function() {
+      const isApproveActive = this.value.trim() !== "";
+      document.getElementById("approve-task-btn").disabled = !isApproveActive;
+      document.getElementById("complete-task-btn").disabled = isApproveActive;
+      document.getElementById("task-id").disabled = isApproveActive;
+      document.getElementById("complete-toki-amount").disabled = isApproveActive;
+    });
+
+    document.getElementById("task-id").addEventListener("input", function() {
+      const isCompleteActive = this.value.trim() !== "";
+      document.getElementById("complete-task-btn").disabled = !isCompleteActive;
+      document.getElementById("approve-task-btn").disabled = isCompleteActive;
+      document.getElementById("other-user-id").disabled = isCompleteActive;
+      document.getElementById("send-toki-amount").disabled = isCompleteActive;
+    });
+
+    // Auth state change listener
+    onAuthStateChanged(auth, async user => {
+      if (user) {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("profile").style.display = "block";
+        document.getElementById("user-email").innerText = user.email;
+
+        const tokiUserRef = doc(db, "toki_users", user.uid);
+        const tokiUserSnap = await getDoc(tokiUserRef);
+
+        if (!tokiUserSnap.exists()) {
+          // Look for the user in the 'users' collection by email
+          const usersQuery = query(collection(db, "users"), where("email", "==", user.email));
+          const userDocs = await getDocs(usersQuery);
+
+          if (!userDocs.empty) {
+            const userData = userDocs.docs[0].data();
+
+            // Create the toki_users entry using the users data
+            await setDoc(tokiUserRef, {
+              toki: 0,
+              email: userData.email,
+              contact: userData.contact,
+              name: userData.name
+            });
+          } else {
+            // fallback if no match in users collection
+            await setDoc(tokiUserRef, {
+              toki: 0,
+              email: user.email
+            });
+          }
+        }
+
+        listenToBalance(user.uid);
+        loadFrozenTokens(user.uid);
+
+        // Real-time notification for receiver when a new pending transaction is created
+        if (window.unsubscribeReceiverNotif) window.unsubscribeReceiverNotif();
+        window.unsubscribeReceiverNotif = onSnapshot(
+          query(
+            collection(db, "frozen_tokens"),
+            where("receiverUid", "==", user.uid),
+            where("status", "==", "pending")
+          ),
+          (snapshot) => {
+            // Only notify for new docs
+            if (!window._lastReceiverNotifIds) window._lastReceiverNotifIds = new Set();
+            snapshot.docChanges().forEach(change => {
+              if (change.type === "added" && !window._lastReceiverNotifIds.has(change.doc.id)) {
+                const data = change.doc.data();
+                showNotifModal(
+                  'New TOKIs Transaction Received',
+                  'You have received a new TOKIs transaction!\nTransaction ID:',
+                  data.taskId
+                );
+                window._lastReceiverNotifIds.add(change.doc.id);
+              }
+            });
+          }
+        );
+      } else {
+        document.getElementById("login").style.display = "block";
+        document.getElementById("profile").style.display = "none";
+        if (window.unsubscribeReceiverNotif) window.unsubscribeReceiverNotif();
+      }
+    });
+
+    // Function to login user
+    window.login = async function() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (err) {
+        alert(err.message);
+      }
+    };
+
+    // Function to logout user
+    window.logout = function() {
+      signOut(auth);
+    };
+
+    // Listen for balance changes
+    function listenToBalance(uid) {
+      const userDoc = doc(db, "toki_users", uid);
+      onSnapshot(userDoc, (docSnap) => {
+        const data = docSnap.data();
+        document.getElementById("balance").innerText = data?.toki || 0;
+      });
+    }
+
+    // Complete task function - earn Toki with variable amount
+    window.completeTask = function() {
+      const uid = auth.currentUser.uid;
+      const userDoc = doc(db, "toki_users", uid);
+      const amount = parseInt(document.getElementById("earn-toki-amount").value) || 10;
+
+      runTransaction(db, async (transaction) => {
+        const docSnap = await transaction.get(userDoc);
+        const newBalance = (docSnap.data()?.toki || 0) + amount;
+        transaction.update(userDoc, { toki: newBalance });
+      }).then(() => {
+        alert(`🎉 Task Completed! You earned ${amount} TOKIs.`);
+      }).catch(err => {
+        console.error("Error awarding TOKIs:", err);
+      });
+    };
+
+    // New function to freeze tokens and store in frozen_tokens collection
+    window.freezeTokens = async function() {
+      const sender = auth.currentUser;
+      const receiverInput = document.getElementById("other-user-id").value.trim();
+      const amount = parseInt(document.getElementById("send-toki-amount").value) || 10;
+      
+      if (!receiverInput) {
+        return alert("Please enter receiver's email.");
+      }
+
+      if (amount <= 0) {
+        return alert("Please enter a valid amount greater than 0.");
+      }
+
+      try {
+        // First check if sender has enough tokens
+        const senderRef = doc(db, "toki_users", sender.uid);
+        const senderSnap = await getDoc(senderRef);
+        const senderBalance = senderSnap.data()?.toki || 0;
+        
+        if (senderBalance < amount) {
+          return alert("Insufficient TOKIs balance for this transaction.");
+        }
+        
+        // Find receiver by email
+        let receiverUid = null;
+        let receiverEmail = receiverInput;
+        
+        const receiverQuery = query(collection(db, "toki_users"), where("email", "==", receiverInput));
+        const receiverQuerySnap = await getDocs(receiverQuery);
+        
+        if (!receiverQuerySnap.empty) {
+          receiverUid = receiverQuerySnap.docs[0].id;
+        } else {
+          return alert("Receiver not found. Please check the email address.");
+        }
+        
+        // Create transaction record in frozen_tokens collection
+        const frozenTokensRef = collection(db, "frozen_tokens");
+        const taskId = generateTaskId();
+        const docRef = await addDoc(frozenTokensRef, {
+          senderUid: sender.uid,
+          senderEmail: sender.email,
+          receiverUid: receiverUid,
+          receiverEmail: receiverEmail,
+          amount: amount,
+          status: "pending",
+          createdAt: serverTimestamp(),
+          taskId: taskId,
+          description: "Token transfer initiated"
+        });
+        
+        // Deduct tokens from sender
+        await runTransaction(db, async (transaction) => {
+          const senderDoc = await transaction.get(senderRef);
+          if (!senderDoc.exists()) {
+            throw new Error("Sender document does not exist!");
+          }
+          
+          const currentBalance = senderDoc.data().toki;
+          if (currentBalance < amount) {
+            throw new Error("Insufficient balance!");
+          }
+          
+          transaction.update(senderRef, { toki: currentBalance - amount });
+        });
+        
+        showNotifModal(
+          'TOKIs Transaction Initiated',
+          `✅ ${amount} TOKIs have been frozen pending completion.\nTransaction ID:`,
+          taskId
+        );
+        loadFrozenTokens(sender.uid);
+        
+      } catch (error) {
+        console.error("Error freezing tokens:", error);
+        alert(`Error: ${error.message}`);
+      }
+    };
+    
+    // Generate a unique task ID
+    function generateTaskId() {
+      const timestamp = new Date().getTime();
+      const randomNum = Math.floor(Math.random() * 10000);
+      return `TRX-${timestamp}-${randomNum}`;
+    }
+    
+    // Load and display frozen tokens for the current user
+    async function loadFrozenTokens(uid) {
+      const frozenTokensContainer = document.getElementById("frozen-tokens-container");
+      const frozenTokensList = document.getElementById("frozen-tokens-list");
+      
+      // Query for tokens where the current user is the sender or receiver
+      const frozenTokensQuery = query(
+        collection(db, "frozen_tokens"),
+        where("senderUid", "==", uid),
+        orderBy("createdAt", "desc"),
+        limit(10)
+      );
+      
+      const querySnapshot = await getDocs(frozenTokensQuery);
+      
+      if (querySnapshot.empty) {
+        frozenTokensContainer.style.display = "none";
+        return;
+      }
+      
+      // Display the frozen tokens section
+      frozenTokensContainer.style.display = "block";
+      frozenTokensList.innerHTML = "";
+      
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const transactionDate = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleString() : "Processing...";
+        
+        const tokenItem = document.createElement("div");
+        tokenItem.className = "frozen-token-item";
+        tokenItem.innerHTML = `
+          <div>
+            <strong>To:</strong> ${data.receiverEmail}<br>
+            <strong>Amount:</strong> ${data.amount} TOKIs<br>
+            <strong>Date:</strong> ${transactionDate}<br>
+            <strong>ID:</strong> ${data.taskId}
+          </div>
+          <div class="token-status ${data.status.toLowerCase()}">${data.status}</div>
+        `;
+        
+        frozenTokensList.appendChild(tokenItem);
+      });
+    }
+    
+    // New function to complete token transaction
+    window.completeTokenTransaction = async function() {
+      const taskId = document.getElementById("task-id").value.trim();
+      const amount = parseInt(document.getElementById("complete-toki-amount").value) || 10;
+      
+      if (!taskId) {
+        return alert("Please enter a Task ID.");
+      }
+
+      try {
+        // Find the frozen token transaction
+        const frozenTokensQuery = query(
+          collection(db, "frozen_tokens"),
+          where("taskId", "==", taskId),
+          where("status", "==", "pending")
+        );
+        
+        const querySnapshot = await getDocs(frozenTokensQuery);
+        
+        if (querySnapshot.empty) {
+          return alert("No pending transaction found with this Task ID.");
+        }
+        
+        const transactionDoc = querySnapshot.docs[0];
+        const transactionData = transactionDoc.data();
+        
+        // Verify the amount matches
+        if (transactionData.amount !== amount) {
+          return alert("Amount does not match the original transaction.");
+        }
+        
+        // Update the transaction status
+        await setDoc(doc(db, "frozen_tokens", transactionDoc.id), {
+          ...transactionData,
+          status: "completed",
+          completedAt: serverTimestamp()
+        });
+        
+        showNotifModal(
+          'TOKIs Transaction Completed',
+          `✅ ${amount} TOKIs have been transferred.\nTransaction ID:`,
+          transactionData.taskId
+        );
+        loadFrozenTokens(auth.currentUser.uid);
+        
+        // Clear the form
+        document.getElementById("task-id").value = "";
+        document.getElementById("complete-toki-amount").value = "10";
+        
+      } catch (error) {
+        console.error("Error completing transaction:", error);
+        alert(`Error: ${error.message}`);
+      }
+    };
+    
+    // Close suggestion dropdowns when clicking elsewhere
+    document.addEventListener('click', function(e) {
+      if (!e.target.matches('#email') && !e.target.matches('#other-user-id')) {
+        document.getElementById('email-suggestions').style.display = 'none';
+        document.getElementById('user-suggestions').style.display = 'none';
+      }
+    });
+
+    // Notification modal functions
+    window.showNotifModal = function(title, message, txid) {
+      document.getElementById('notif-title').innerText = title;
+      document.getElementById('notif-message').innerText = message;
+      document.getElementById('notif-copy-input').value = txid;
+      document.getElementById('notif-modal').style.display = 'flex';
+    };
+    window.closeNotifModal = function() {
+      document.getElementById('notif-modal').style.display = 'none';
+    };
+    window.copyNotifInput = function() {
+      const input = document.getElementById('notif-copy-input');
+      input.select();
+      input.setSelectionRange(0, 99999);
+      document.execCommand('copy');
+    };
+  </script>
+</body>
+</html>

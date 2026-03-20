@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SkillTrade - Post a New Task</title>
+  <link rel="stylesheet" href="css/post.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+  <header>
+    <div class="container">
+      <img src="logo.png" alt="SkillTrade Logo" class="logo">
+      <nav>
+        <ul>
+          <li><a href="index.html"><i class="fa-solid fa-house"></i> Home</a></li>
+          <li><a href="profile.html"><i class="fa-solid fa-user"></i> My Profile</a></li>
+          <li><a href="#" style="color:#4da6ff;"><i class="fa-solid fa-plus"></i> Post Task</a></li>
+          <li><a href="wallet.html"><i class="fa-solid fa-wallet"></i> Wallet</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="post-task-container">
+    <h1>Post a New Task</h1>
+    <p class="subtext">Share what you need help with</p>
+
+    <form id="taskForm" class="task-form">
+      <label for="title">Task Title</label>
+      <input type="text" id="title" required />
+
+      <label for="description">Description</label>
+      <textarea id="description" rows="4" required></textarea>
+
+      <label for="deadline">Deadline</label>
+      <input type="date" id="deadline" required />
+
+      <div class="barter-toggle">
+        <label class="toggle-label" for="barter">Barter instead of tokens</label>
+        <label class="switch">
+          <input type="checkbox" id="barter">
+          <span class="slider round"></span>
+        </label>
+      </div>
+
+      <div id="tokens-group">
+        <label for="tokens">Tokens Offered</label>
+        <input type="number" id="tokens" min="0" value="5" />
+      </div>
+
+      <label for="skills">Skills Required</label>
+      <input type="text" id="skills" required />
+
+      <button type="submit" class="post-btn">Submit details</button>
+    </form>
+  </main>
+
+  <!-- Confirmation Modal -->
+  <div id="confirmationModal" class="modal">
+    <div class="modal-content">
+      <h2>Confirm Task Posting</h2>
+      <p>You are about to spend <span id="tokenAmount">0</span> tokens to post this task.</p>
+      <p>Are you sure you want to proceed?</p>
+      <div class="modal-buttons">
+        <button id="confirmPost" class="confirm-btn">Confirm & Post</button>
+        <button id="cancelPost" class="cancel-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyC4rWcnOVhEe25tLftQFI32oMUl4fSp7zk",
+      authDomain: "skilltrade-67ea2.firebaseapp.com",
+      projectId: "skilltrade-67ea2",
+      storageBucket: "skilltrade-67ea2.appspot.com",
+      messagingSenderId: "381930307884",
+      appId: "1:381930307884:web:99f0db9878cb472edd2c89",
+      measurementId: "G-PV0G2TPBRE"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('taskForm');
+    const barterCheckbox = document.getElementById('barter');
+    const tokensGroup = document.getElementById('tokens-group');
+    const returnGroup = document.getElementById('return-group');
+    const modal = document.getElementById('confirmationModal');
+    const tokenAmountSpan = document.getElementById('tokenAmount');
+    const confirmPostBtn = document.getElementById('confirmPost');
+    const cancelPostBtn = document.getElementById('cancelPost');
+
+    let formData = null;
+
+    // Toggle display based on barter checkbox
+    barterCheckbox.addEventListener('change', () => {
+      if (barterCheckbox.checked) {
+        tokensGroup.style.display = 'none';
+        returnGroup.style.display = 'block';
+      } else {
+        tokensGroup.style.display = 'block';
+        returnGroup.style.display = 'none';
+      }
+    });
+
+    // Check if user is logged in
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        alert("Please log in to post a task.");
+        return;
+      }
+
+      // Submit form handler
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const title = document.getElementById('title').value.trim();
+        const description = document.getElementById('description').value.trim();
+        const deadline = document.getElementById('deadline').value;
+        const skills = document.getElementById('skills').value.trim();
+        const barter = barterCheckbox.checked;
+        const tokens = barter ? 0 : parseInt(document.getElementById('tokens').value);
+        const barterReturn = barter ? document.getElementById('barterReturn').value.trim() : "";
+
+        // Basic validation
+        if (!title || !description || !deadline || !skills) {
+          alert('Please fill in all required fields.');
+          return;
+        }
+
+        try {
+          // Check token balance first
+          const userDoc = await db.collection('toki_users').doc(user.uid).get();
+          console.log('User document:', userDoc.data()); // Debug log
+          
+          if (!userDoc.exists) {
+            // Create new document with initial toki balance
+            await db.collection('toki_users').doc(user.uid).set({
+              toki: 100, // Initial token balance
+              email: user.email
+            });
+            console.log('Created new user token document');
+          }
+
+          const currentBalance = userDoc.exists ? userDoc.data().toki : 100;
+          console.log('Current balance:', currentBalance); // Debug log
+          console.log('Tokens to spend:', tokens); // Debug log
+          
+          if (tokens > currentBalance) {
+            alert('Insufficient tokens! Please add more tokens to your wallet.');
+            return;
+          }
+
+          // Store form data for later use
+          formData = {
+            uid: user.uid,
+            postedBy: user.displayName || user.email,
+            title,
+            description,
+            deadline,
+            skills,
+            barter,
+            tokens,
+            barterReturn,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          };
+
+          // Show confirmation modal
+          tokenAmountSpan.textContent = tokens;
+          modal.style.display = 'block';
+        } catch (error) {
+          console.error('Error checking balance:', error);
+          alert('Error checking token balance. Please try again.');
+        }
+      });
+
+      // Handle confirmation
+      confirmPostBtn.addEventListener('click', async () => {
+        try {
+          // Update token balance
+          await db.collection('toki_users').doc(user.uid).update({
+            toki: firebase.firestore.FieldValue.increment(-formData.tokens)
+          });
+
+          // Save to Firestore
+          await db.collection('tasks').add(formData);
+          
+          alert('Task posted successfully!');
+          form.reset();
+          tokensGroup.style.display = 'block';
+          returnGroup.style.display = 'none';
+          modal.style.display = 'none';
+        } catch (error) {
+          console.error('Error saving task:', error);
+          alert('Error saving task. Please try again.');
+        }
+      });
+
+      // Handle cancellation
+      cancelPostBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+      });
+
+      // Close modal when clicking outside
+      window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+  }
+
+  .modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+    text-align: center;
+  }
+
+  .modal-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .confirm-btn {
+    background-color: #4da6ff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .cancel-btn {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .confirm-btn:hover, .cancel-btn:hover {
+    opacity: 0.9;
+  }
+</style>
+
+</body>
+</html>

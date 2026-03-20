@@ -1,0 +1,191 @@
+@charset "UTF-8";
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8fbff;
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-top: 1rem;
+  }
+  
+  /* Navbar */
+  .navbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 10px 0;
+  }
+  
+  .navbar .logo {
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: #8b5cf6;
+  }
+  
+  .navbar .logo span {
+    color: #38bdf8;
+  }
+  
+  .navbar nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1.2rem;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .navbar nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+  }
+  
+  .navbar nav ul li a:hover {
+    background-color: #e0f0ff;
+    color: #1e88e5;
+  }
+  
+  /* Wallet Layout */
+  .wallet-page h1 {
+    font-size: 1.8rem;
+    margin: 1.5rem 0 1rem;
+  }
+  
+  .wallet-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .card {
+    flex: 1;
+    min-width: 250px;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border: 1px solid #e0e0e0;
+  }
+  
+  .total-balance {
+    background: linear-gradient(to right, #8ccaea, #ffffff);
+  }
+  
+  .tokens-earned {
+    background: linear-gradient(to right, #c4fdbf, #ffffff);
+  }
+  
+  .tokens-spent {
+    background: linear-gradient(to right, #f38b8b, #ffffff);
+  }
+  
+  .card-label {
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    color: black;
+  }
+  
+  .card h2 {
+    margin: 0;
+    font-size: 1.8rem;
+  }
+  
+  .card span {
+    color: black;
+    font-size: 0.9rem;
+  }
+  
+  /* Transactions */
+  .transactions h2 {
+    margin-bottom: 1rem;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  
+  th, td {
+    text-align: left;
+    padding: 0.75rem 1rem;
+  }
+  
+  thead {
+    background-color: #f9f9f9;
+    color: #333;
+  }
+  
+  tbody tr:nth-child(odd) {
+    background-color: #f9f9fb;
+  }
+  
+  .earned {
+    color: #00a65a;
+    font-weight: 600;
+  }
+  
+  .spent {
+    color: #e57300;
+    font-weight: 600;
+  }
+  
+/* Container Utility */
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+  }
+  
+  /* Header/Navbar */
+  header {
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  header img {
+    height: 50px;
+    margin-right: 1rem;
+  }
+  
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 3rem;
+  }
+  
+  nav a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+  
+  nav a:hover {
+    color: #4da6ff; /* Light Blue */
+  }

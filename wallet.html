@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SkillTrade - Wallet</title>
+  <link rel="stylesheet" href="css/wallet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <img src="logo.png" alt="SkillTrade Logo" class="logo">
+      <nav>
+        <ul>
+          <li><a href="index.html" ><i class="fa-solid fa-house"></i> Home</a></li>
+          <li><a href="profile.html"><i class="fa-solid fa-user"></i> My Profile</a></li>
+          <li><a href="post.html"><i class="fa-solid fa-plus"></i> Post Task</a></li>
+          <li><a href="wallet.html" style="color:#4da6ff;"><i class="fa-solid fa-wallet"></i> Wallet</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wallet-page">
+    <div class="container">
+      <!-- Token Purchase Section -->
+      <section class="token-purchase">
+        <h2>Purchase Tokens</h2>
+        <div class="purchase-container">
+          <div class="token-packages">
+            <div class="package-card" data-tokens="50">
+              <div class="package-header">
+                <i class="fa-solid fa-gem"></i>
+                <h3>Basic</h3>
+              </div>
+              <div class="package-details">
+                <p class="token-amount">50 Tokens</p>
+                <p class="price">₹50</p>
+                <button class="purchase-btn">Purchase</button>
+              </div>
+            </div>
+            <div class="package-card popular" data-tokens="100">
+              <div class="package-header">
+                <i class="fa-solid fa-crown"></i>
+                <h3>Popular</h3>
+                <span class="popular-badge">Best Value</span>
+              </div>
+              <div class="package-details">
+                <p class="token-amount">100 Tokens</p>
+                <p class="price">₹75</p>
+                <p class="savings">Save ₹25</p>
+                <button class="purchase-btn">Purchase</button>
+              </div>
+            </div>
+            <div class="package-card" data-tokens="200">
+              <div class="package-header">
+                <i class="fa-solid fa-star"></i>
+                <h3>Premium</h3>
+              </div>
+              <div class="package-details">
+                <p class="token-amount">200 Tokens</p>
+                <p class="price">₹150</p>
+                <p class="savings">Save ₹50</p>
+                <button class="purchase-btn">Purchase</button>
+              </div>
+            </div>
+          </div>
+          <div class="custom-purchase">
+            <h3>Custom Amount</h3>
+            <div class="custom-input">
+              <input type="number" id="customTokens" min="10" placeholder="Enter token amount">
+              <span class="token-label">Tokens</span>
+            </div>
+            <p class="estimated-price">Estimated Price: <span id="estimatedPrice">₹0</span></p>
+            <button class="purchase-btn" id="customPurchaseBtn">Purchase</button>
+          </div>
+        </div>
+      </section>
+
+      <h1>Token Wallet</h1>
+      <!-- Second Set -->
+      <h2>Token Value Summary</h2>
+      <div class="wallet-cards">
+        <div class="card total-balance">
+          <p class="card-label"><i class="fa-solid fa-coins"></i> Total Balance</p>
+          <h2>10 Tokens</h2>
+          <span>≈ ₹110 available to spend</span>
+        </div>
+        <div class="card tokens-earned">
+          <p class="card-label"><i class="fa-solid fa-arrow-trend-up"></i> Tokens Earned</p>
+          <h2>18</h2>
+          <span>≈ ₹170 earned to date</span>
+        </div>
+        <div class="card tokens-spent">
+          <p class="card-label"><i class="fa-solid fa-arrow-trend-down"></i> Tokens Spent</p>
+          <h2>8</h2>
+          <span>≈ ₹60 spent to date</span>
+        </div>
+      </div>
+
+      <!-- Transaction History -->
+      <section class="transactions">
+        <h2>Transaction History</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Type</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody id="transactionHistory">
+            <!-- Transactions will be loaded dynamically -->
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Approve Completed Tasks Section -->
+      <section class="approve-tasks">
+        <h2>Approve Completed Tasks</h2>
+        <div id="approveTasksList">
+          <table class="task-table" id="approveTasksTable">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Completed By</th>
+                <th>Completed At</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Tasks will be injected here -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Redeem Tokens Section -->
+      <section class="redeem-tokens">
+        <h2>Redeem Tokens</h2>
+        <div id="redeemTokensList">
+          <table class="task-table" id="redeemTokensTable">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Posted By</th>
+                <th>Tokens</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Tasks will be injected here -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyC4rWcnOVhEe25tLftQFI32oMUl4fSp7zk",
+      authDomain: "skilltrade-67ea2.firebaseapp.com",
+      projectId: "skilltrade-67ea2",
+      storageBucket: "skilltrade-67ea2.appspot.com",
+      messagingSenderId: "381930307884",
+      appId: "1:381930307884:web:99f0db9878cb472edd2c89",
+      measurementId: "G-PV0G2TPBRE"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    // Handle package purchases
+    const packageCards = document.querySelectorAll('.package-card');
+    packageCards.forEach(card => {
+      const purchaseBtn = card.querySelector('.purchase-btn');
+      purchaseBtn.addEventListener('click', () => {
+        const tokens = card.dataset.tokens;
+        initiatePurchase(tokens);
+      });
+    });
+
+    // Handle custom purchase
+    const customInput = document.getElementById('customTokens');
+    const customPurchaseBtn = document.getElementById('customPurchaseBtn');
+    const estimatedPrice = document.getElementById('estimatedPrice');
+
+    customInput.addEventListener('input', () => {
+      const tokens = parseInt(customInput.value) || 0;
+      const price = calculatePrice(tokens);
+      estimatedPrice.textContent = `₹${price}`;
+    });
+
+    customPurchaseBtn.addEventListener('click', () => {
+      const tokens = parseInt(customInput.value) || 0;
+      if (tokens >= 10) {
+        initiatePurchase(tokens);
+      } else {
+        alert('Minimum purchase amount is 10 tokens');
+      }
+    });
+
+    function calculatePrice(tokens) {
+      // For Basic plan (50 tokens or less), 1 rupee = 1 token
+      if (tokens <= 50) {
+        return tokens;
+      }
+      // For other plans, ₹5 per token
+      return tokens * 5;
+    }
+
+    async function initiatePurchase(tokens) {
+      try {
+        const user = auth.currentUser;
+        if (!user) {
+          alert('Please log in to purchase tokens');
+          return;
+        }
+
+        const price = calculatePrice(tokens);
+        const confirmed = confirm(`Confirm purchase of ${tokens} tokens for ₹${price}?`);
+        
+        if (confirmed) {
+          const userRef = db.collection('toki_users').doc(user.uid);
+          const userDoc = await userRef.get();
+          let userData = userDoc.exists ? userDoc.data() : {};
+
+          // Ensure all required fields are present
+          const email = user.email || userData.email || '';
+          const tokensEarned = (userData.tokensEarned || 0) + parseInt(tokens);
+          const toki = userData.toki || 0; // If you want to update this, add logic here
+          const totalBalance = (userData.totalBalance || 0) + parseInt(tokens);
+          const transactions = userData.transactions || [];
+
+          // Add new transaction
+          const newTransaction = {
+            amount: parseInt(tokens),
+            date: new Date(),
+            description: 'Token Purchase',
+            type: 'EARNED'
+          };
+          transactions.push(newTransaction);
+
+          // Set or update the document with all required fields
+          await userRef.set({
+            email,
+            tokensEarned,
+            toki,
+            totalBalance,
+            transactions
+          }, { merge: true });
+
+          alert('Tokens purchased successfully!');
+        }
+      } catch (error) {
+        console.error('Error processing purchase:', error);
+        alert('Error processing purchase. Please try again.');
+      }
+    }
+
+    // Load transaction history
+    function loadTransactionHistory() {
+      const user = auth.currentUser;
+      if (!user) {
+        console.log("No user logged in");
+        return;
+      }
+
+      console.log("Loading transactions for user:", user.uid);
+      const transactionHistory = document.getElementById('transactionHistory');
+      transactionHistory.innerHTML = ''; // Clear existing transactions
+
+      // Query transactions where user is either sender or receiver
+      db.collection("transactions")
+        .where("userId", "==", user.uid)
+        .orderBy("timestamp", "desc")
+        .limit(10)
+        .get()
+        .then((querySnapshot) => {
+          console.log("Found transactions:", querySnapshot.size);
+          
+          if (querySnapshot.empty) {
+            transactionHistory.innerHTML = `
+              <tr>
+                <td colspan="4" class="empty-state">No transactions found</td>
+              </tr>
+            `;
+            return;
+          }
+
+          querySnapshot.forEach((doc) => {
+            const transaction = doc.data();
+            console.log("Processing transaction:", transaction);
+            
+            const row = document.createElement('tr');
+            
+            // Format the date
+            let formattedDate;
+            if (transaction.timestamp) {
+              const date = transaction.timestamp.toDate();
+              formattedDate = formatDate(date);
+            } else {
+              formattedDate = "Date not available";
+            }
+            
+            // Determine transaction type and styling
+            const type = transaction.type || 'earned';
+            const typeClass = type === 'earned' ? 'earned' : 'spent';
+            const typePrefix = type === 'earned' ? '+' : '';
+            
+            row.innerHTML = `
+              <td>${formattedDate}</td>
+              <td>${transaction.description || 'No description'}</td>
+              <td class="${typeClass}">${typePrefix} ${type}</td>
+              <td class="${typeClass}">${typePrefix}${transaction.amount || 0} Tokens</td>
+            `;
+            
+            transactionHistory.appendChild(row);
+          });
+        })
+        .catch((error) => {
+          console.error("Error loading transactions:", error);
+          transactionHistory.innerHTML = `
+            <tr>
+              <td colspan="4" class="error-state">Error loading transactions</td>
+            </tr>
+          `;
+        });
+    }
+
+    // Helper function to format date
+    function formatDate(date) {
+      if (!(date instanceof Date) || isNaN(date)) {
+        console.error("Invalid date:", date);
+        return "Invalid date";
+      }
+      
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+    }
+
+    // Load transactions when user is authenticated
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        console.log("User authenticated:", user.uid);
+        loadTransactionHistory();
+      } else {
+        window.location.href = 'login.html';
+      }
+    });
+  </script>
+  <script src="js/wallet.js"></script>
+</body>
+</html>
