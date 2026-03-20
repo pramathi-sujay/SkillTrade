@@ -23,8 +23,7 @@ Java (JDBC, Servlets)
 Node.js
 
 Database
-MySQL
-SQLite
+FireBase
 
 SYSTEM OVERVIEW
 
