@@ -75,7 +75,9 @@ FUTURE IMPROVEMENTS
 CONTRIBUTORS
 
 Pramathi Sujay
-(Add other team members if applicable)
+Richa Sinha
+S Shreya
+Sharadhi Adiga
 
 LICENSE
 
